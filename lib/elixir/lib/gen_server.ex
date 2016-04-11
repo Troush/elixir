@@ -566,6 +566,10 @@ defmodule GenServer do
   """
   @spec call(server, term, timeout) :: term
   def call(server, request, timeout \\ 5000) do
+    if server == self do
+      raise ArgumentError, message: 
+      "invalid server argument in call(server, request, timeout). Looks like you trying to call a parent process"
+    end
     try do
       :gen.call(server, :"$gen_call", request, timeout)
     catch
